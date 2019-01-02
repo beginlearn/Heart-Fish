@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>爱心鱼游戏</title>
+	<style type="text/css">
+		body, div{
+			margin:0;
+			padding:0;
+		}
+		#box{
+			margin:0 auto;
+			width:800px;
+			height:600px;
+			border:1px solid black;
+			position: relative;
+		}
+		canvas{
+			position: absolute;
+			left:0;
+			top:0;
+		}
+		#bg{
+			background: url('./src/background.jpg') no-repeat;
+			z-index:0;
+		}
+		#biaomian{
+			/*opacity:0;*/
+			z-index:1;
+		}
+		#zhezhao{
+			z-index:2;
+			background-color: black;
+			opacity:0.5;
+		}
+	</style>
+</head>
+<body>
+	<div id="box">
+		<canvas id="bg" width="800" height="600"></canvas>
+		<canvas id="biaomian" width="800" height="600"></canvas>
+		<canvas id="zhezhao" width="800" height="600"></canvas>
+	</div>
+	<script src="./index.js"></script>
+	<script src="./myCommonFunctions.js"></script>
+	<script src="./haicao.js"></script>
+	<script src="./fruit.js"></script>
+	<script src="./bigFish.js"></script>
+	<script src="./smallFish.js"></script>
+	<script src="./Loading.js"></script>
+	<script>
+
+		//requestAnimationFrame间隔函数的简单兼容
+		window.requestAnimFrame = (function(){
+			return  window.requestAnimationFrame       ||
+			        window.webkitRequestAnimationFrame ||
+			        window.mozRequestAnimationFrame    ||
+			        function( callback ){
+			        window.setTimeout(callback, 1000 / 60);
+		        };
+			})();
+			//海草、果实、大鱼、小鱼实例化
+			var haicao=new Haicao();
+			var fruit=new Fruit();
+			var bigFish=new BigFish();
+			var smallFish=new smallFish();
+			var loading=new Loading();
+		function  init() {
+			//ctx1.clearRect(0,0,800,600);
+			haicao.init();
+			fruit.init();
+			
+			needChange();
+		}
+		function needChange(){
+			//大鱼、小鱼相关图片加载完后，删除遮罩层
+			if(bigFishLoad && smallFishLoad && delZhezhao){
+				//console.log('success');
+				delZhezhao=false;
+				oBox.removeChild(oZhezhao);
+			}
+			currentTime=new Date().getTime();
+			deltaTime=currentTime-lastTime;
+			lastTime=currentTime;
+			loading.init();
+			//console.log(jiangeTime);
+			ctx1.clearRect(0,0,ctxWidth,ctxHeight);
+			haicao.huacao();
+			fruit.grow();
+			bigFish.init();
+			smallFish.init();
+			requestAnimFrame(needChange);
+		}
+		init();
+	</script>
+</body>
+</html>
